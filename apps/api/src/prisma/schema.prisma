@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  C1001
+  E3210
+  M4321
+  A5432
+}
+
+model User {
+  id          String    @id @unique @default(uuid())
+  username    String    @unique
+  email       String    @unique
+  password    String?
+  first_name  String?
+  last_name   String?
+  role        ROLE?     @default(C1001)
+  birthdate   DateTime?
+  isActive    Boolean?  @default(true)
+  created_at  DateTime  @default(now())
+  modified_at DateTime?
+
+  address User_metadata[]
+}
+
+model User_metadata {
+  id            String    @id @unique @default(uuid())
+  user_id       String    @unique
+  address_line1 String?
+  address_line2 String?
+  city          String?   @default("kigali")
+  postal_code   String?   @default("99999")
+  country       String?   @default("rwanda")
+  telephone     String?
+  mobile        String?
+  alt_email     String?
+  created_at    DateTime  @default(now())
+  modified_at   DateTime?
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Store_branch {
+  id                 String    @id @unique @default(uuid())
+  store_name         String?
+  description        String?
+  city               String?   @default("kigali")
+  store_geo_location Json?
+  is_public          Boolean?  @default(true)
+  created_at         DateTime  @default(now())
+  modified_at        DateTime?
+
+  inventory_at_location Product_inventory_at_branch[]
+}
+
+model Product_category {
+  id          Int       @id @unique @default(autoincrement())
+  name        String
+  description String?
+  created_at  DateTime  @default(now())
+  modified_at DateTime?
+
+  Product Product[]
+}
+
+model Product_inventory {
+  id          Int       @id @unique @default(autoincrement())
+  product_id  String
+  quantity    Int
+  created_at  DateTime  @default(now())
+  modified_at DateTime?
+
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model Product_inventory_at_branch {
+  id          Int       @id @unique @default(autoincrement())
+  store_id    String
+  quantity    Int
+  product_id  String
+  employee_id String
+  created_at  DateTime  @default(now())
+  modified_at DateTime?
+
+  store   Store_branch @relation(fields: [store_id], references: [id])
+  product Product      @relation(fields: [product_id], references: [id])
+}
+
+enum UNITS {
+  KG
+  LITRES
+  PIECES
+}
+
+model Product {
+  id           String    @id @unique @default(uuid())
+  name         String
+  description  String
+  SKU          String
+  category_id  Int
+  inventory_id Int
+  price        Decimal
+  weight       Decimal
+  units        UNITS     @default(KG)
+  currency     String    @default("rwf")
+  created_at   DateTime  @default(now())
+  modified_at  DateTime?
+
+  category              Product_category              @relation(fields: [category_id], references: [id])
+  inventory_at_location Product_inventory_at_branch[]
+  total_inventory       Product_inventory[]
+}
+
+enum ORDER_STATUS {
+  InProgress
+  Canceled
+  Completed
+  Returned
+}
+
+model Orders {
+  id          String       @id @unique @default(uuid())
+  user_id     String
+  status      ORDER_STATUS @default(InProgress)
+  products    Json[]
+  amount      Decimal
+  payment_id  String
+  created_at  DateTime     @default(now())
+  modified_at DateTime?
+  payment     Payment      @relation(fields: [payment_id], references: [id])
+}
+
+enum PAYEMENT_TYPE {
+  InPerson
+  Online
+}
+
+model Payment {
+  id            String        @id @unique @default(uuid())
+  order_id      String
+  amount        Decimal
+  provider      String
+  payement_type PAYEMENT_TYPE
+  status        String
+  created_at    DateTime      @default(now())
+  modified_at   DateTime?
+
+  Orders Orders[]
+}
