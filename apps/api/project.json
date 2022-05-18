@@ -3,6 +3,9 @@
   "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
+    "prisma":{
+      "executor": "npx prisma migrate dev --name dev_v1"
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],

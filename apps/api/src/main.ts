@@ -1,12 +1,14 @@
 import * as express from 'express';
 import { Message } from '@food-app/api-interfaces';
+import { findAllUsers } from './app/user.prisma';
 
 const app = express();
 
-const greeting: Message = { message: 'Welcome to api!' };
+const greeting: Message = { message: 'Welcome to api! Kevin here' };
 
-app.get('/api', (req, res) => {
-  res.send(greeting);
+app.get('/api', async (_req, res) => {
+  const usersList = await findAllUsers()
+  res.send(usersList);
 });
 
 const port = process.env.port || 3333;
