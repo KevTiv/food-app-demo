@@ -1,14 +1,25 @@
 import { orderInfoType, ORDER_STATUS } from "@food-app/api-interfaces";
-import { prisma } from "../prisma"
+import { prisma } from "../../prisma"
 
 // Get
 export const findAllOrders=()=>{
     return prisma.orders.findMany();
 };
-export const findAllOrdersByUser=(user_id:string)=>{
-    return prisma.orders.findMany({
-        where: {user_id: user_id}
-    })
+export const findAllOrdersByUser=(user_id:string, orderStatus: ORDER_STATUS)=>{
+    if(orderStatus){
+        return prisma.orders.findMany({
+            where: {
+                user_id: user_id,
+                status: orderStatus
+            }
+        });
+    }else{
+        return prisma.orders.findMany({
+            where: {
+                user_id: user_id,
+            }
+        });
+    }
 };
 export const findAllOrdersByStatus=(status: ORDER_STATUS)=>{
     return prisma.orders.findMany({

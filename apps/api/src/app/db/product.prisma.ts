@@ -1,5 +1,5 @@
 import { productInfoType } from "@food-app/api-interfaces";
-import { prisma } from "../prisma"
+import { prisma } from "../../prisma"
 
 // Get product
 export const findAllProducts= ()=>{

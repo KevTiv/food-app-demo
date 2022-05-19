@@ -4,7 +4,7 @@
   "projectType": "application",
   "targets": {
     "prisma":{
-      "executor": "npx prisma migrate dev --name dev_v1"
+      "executor": "npx prisma migrate dev --name dev"
     },
     "build": {
       "executor": "@nrwl/node:webpack",
