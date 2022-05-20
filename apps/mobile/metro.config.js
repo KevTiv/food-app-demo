@@ -1,16 +1,12 @@
-const { withNxMetro } = require('@nrwl/expo');
-const { getDefaultConfig } = require('@expo/metro-config');
+const { withNxMetro } = require('@nrwl/expo')
+const { getDefaultConfig } = require('@expo/metro-config')
 
-const defaultConfig = getDefaultConfig(__dirname);
+const defaultConfig = getDefaultConfig(__dirname)
 
 module.exports = (async () => {
-  defaultConfig.transformer.babelTransformerPath = require.resolve(
-    'react-native-svg-transformer'
-  );
-  defaultConfig.resolver.assetExts = defaultConfig.resolver.assetExts.filter(
-    (ext) => ext !== 'svg'
-  );
-  defaultConfig.resolver.sourceExts.push('svg');
+  defaultConfig.transformer.babelTransformerPath = require.resolve('react-native-svg-transformer')
+  defaultConfig.resolver.assetExts = defaultConfig.resolver.assetExts.filter((ext) => ext !== 'svg')
+  defaultConfig.resolver.sourceExts.push('svg')
   return withNxMetro(defaultConfig, {
     // Change this to true to see debugging info.
     // Useful if you have issues resolving modules
@@ -21,5 +17,5 @@ module.exports = (async () => {
     projectRoot: __dirname,
     // Specify any additional (to projectRoot) watch folders, this is used to know which files to watch
     watchFolders: [],
-  });
-})();
+  })
+})()
